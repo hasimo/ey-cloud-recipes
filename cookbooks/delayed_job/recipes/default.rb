@@ -7,15 +7,18 @@ if node[:instance_role] == "solo" || (node[:instance_role] == "util" && node[:na
   node[:applications].each do |app_name,data|
   
     # determine the number of workers to run based on instance size
-    if node[:instance_role] == 'solo'
-      worker_count = 1
+    worker_count = if node[:instance_role] == 'solo'
+      1
     else
       case node[:ec2][:instance_type]
-      when 'm1.small': worker_count = 2
-      when 'c1.medium': worker_count = 4
-      when 'c1.xlarge': worker_count = 8
-      else 
-        worker_count = 2
+      when 'm1.small'
+        2
+      when 'c1.medium'
+        4
+      when 'c1.xlarge'
+        8
+      else
+        2
       end
     end
     
